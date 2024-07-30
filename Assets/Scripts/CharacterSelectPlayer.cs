@@ -19,6 +19,7 @@ public class CharacterSelectPlayer : MonoBehaviour {
         kickButton.onClick.AddListener(() => {
             PlayerData playerData = SoccerGameMultiplayer.Instance.GetPlayerDataFromPlayerIndex(playerIndex);
             SoccerGameLobby.Instance.KickPlayer(playerData.playerId.ToString());
+            //this is a test
             SoccerGameMultiplayer.Instance.KickPlayer(playerData.clientId);
         });
     }
