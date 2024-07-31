@@ -21,7 +21,7 @@ public class GameInput : MonoBehaviour {
         Interact,
         InteractAlternate,
         Pause,
-        Shoot,  // 添加射门绑定枚举
+        Kick, 
         Gamepad_Interact,
         Gamepad_InteractAlternate,
         Gamepad_Pause
@@ -43,14 +43,14 @@ public class GameInput : MonoBehaviour {
         playerInputActions.Player.Interact.performed += Interact_performed;
         playerInputActions.Player.InteractAlternate.performed += InteractAlternate_performed;
         playerInputActions.Player.Pause.performed += Pause_performed;
-        playerInputActions.Player.Shoot.performed += Shoot_performed;  // 绑定射门键事件
+        playerInputActions.Player.Kick.performed += Kick_performed;  
     }
 
     private void OnDestroy() {
         playerInputActions.Player.Interact.performed -= Interact_performed;
         playerInputActions.Player.InteractAlternate.performed -= InteractAlternate_performed;
         playerInputActions.Player.Pause.performed -= Pause_performed;
-        playerInputActions.Player.Shoot.performed -= Shoot_performed;  // 解绑射门键事件
+        playerInputActions.Player.Kick.performed -= Kick_performed;  
 
         playerInputActions.Dispose();
     }
@@ -67,7 +67,7 @@ public class GameInput : MonoBehaviour {
         OnInteractAction?.Invoke(this, EventArgs.Empty);
     }
 
-    private void Shoot_performed(InputAction.CallbackContext obj) {
+    private void Kick_performed(InputAction.CallbackContext obj) {
         OnShootAction?.Invoke(this, EventArgs.Empty);
     }
 
@@ -96,8 +96,8 @@ public class GameInput : MonoBehaviour {
                 return playerInputActions.Player.InteractAlternate.bindings[0].ToDisplayString();
             case Binding.Pause:
                 return playerInputActions.Player.Pause.bindings[0].ToDisplayString();
-            case Binding.Shoot:
-                return playerInputActions.Player.Shoot.bindings[0].ToDisplayString();  // 获取射门键绑定文本
+            case Binding.Kick:
+                return playerInputActions.Player.Kick.bindings[0].ToDisplayString(); 
             case Binding.Gamepad_Interact:
                 return playerInputActions.Player.Interact.bindings[1].ToDisplayString();
             case Binding.Gamepad_InteractAlternate:
@@ -143,8 +143,8 @@ public class GameInput : MonoBehaviour {
                 inputAction = playerInputActions.Player.Pause;
                 bindingIndex = 0;
                 break;
-            case Binding.Shoot:
-                inputAction = playerInputActions.Player.Shoot;
+            case Binding.Kick:
+                inputAction = playerInputActions.Player.Kick;
                 bindingIndex = 0;
                 break;
             case Binding.Gamepad_Interact:

@@ -1,50 +1,76 @@
-using System;
-using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
+using Unity.Netcode;
 
 public class SoccerBall : NetworkBehaviour
 {
-    [SerializeField] private float ballRadius = 0.5f;
-    [SerializeField] private float ballMass = 1f;
-    [SerializeField] private List<Vector3> spawnPositionList;
-
+    [SerializeField] private float maxSpeed = 10f;
+    
     private Rigidbody rb;
+    private NetworkVariable<int> lastPlayerColorId = new NetworkVariable<int>(-1);
+    private NetworkVariable<Vector3> networkedVelocity = new NetworkVariable<Vector3>();
 
     private void Awake()
     {
-        rb = gameObject.AddComponent<Rigidbody>();
-        rb.mass = ballMass;
-        rb.useGravity = true;
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
-
-        SphereCollider collider = gameObject.AddComponent<SphereCollider>();
-        collider.radius = ballRadius;
+        rb = GetComponent<Rigidbody>();
     }
 
-    public override void OnNetworkSpawn()
+    private void Update()
     {
+       
         if (IsServer)
         {
-            TransformToSpawnPosition();
+
+            if (rb.velocity.magnitude > maxSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * maxSpeed;
+            }
+
+            
+            networkedVelocity.Value = rb.velocity;
+        }
+        else
+        {
+           
+            rb.velocity = networkedVelocity.Value;
         }
     }
 
-    private void TransformToSpawnPosition()
+    public void OnPlayerTouch(Vector3 direction, float force, int playerColorId)
     {
-        int randomIndex = UnityEngine.Random.Range(0, spawnPositionList.Count);
-        transform.position = spawnPositionList[randomIndex];
+        if (IsServer)
+        {
+            rb.AddForce(direction * force, ForceMode.Impulse);
+            lastPlayerColorId.Value = playerColorId; // Update last player to touch the ball
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Goal"))
+        if (!IsServer) return;
+
+        if (other.CompareTag("OrangeGate"))
         {
-            if (IsServer)
+            if (IsOrangeTeam(lastPlayerColorId.Value))
             {
-                int teamColorId = other.gameObject.GetComponent<Goal>().TeamColorId;
-                ShootManager.Instance.GoalScored(teamColorId);
+                KickManager.Instance.GoalScored(1);
             }
         }
+        else if (other.CompareTag("BlueGate"))
+        {
+            if (IsBlueTeam(lastPlayerColorId.Value))
+            {
+                KickManager.Instance.GoalScored(0);
+            }
+        }
+    }
+
+    private bool IsOrangeTeam(int colorId)
+    {
+        return colorId < 6;
+    }
+
+    private bool IsBlueTeam(int colorId)
+    {
+        return colorId >= 6;
     }
 }

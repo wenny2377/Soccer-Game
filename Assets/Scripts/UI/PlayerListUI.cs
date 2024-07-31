@@ -43,7 +43,7 @@ public class PlayerListUI : MonoBehaviour
             else if (colorId >= orangeTeamTextList.Count && colorId < orangeTeamTextList.Count + blueTeamTextList.Count)
             {
                 // Update blue team slots
-                blueTeamTextList[colorId - orangeTeamTextList.Count].text = $"{colorId + 1}. {playerData.playerName}";
+                blueTeamTextList[colorId - orangeTeamTextList.Count].text = $"{(colorId%6)+1}. {playerData.playerName}";
             }
         }
     }
@@ -52,11 +52,11 @@ public class PlayerListUI : MonoBehaviour
     {
         foreach (var text in orangeTeamTextList)
         {
-            text.text = "No";
+            text.text = "  ";
         }
         foreach (var text in blueTeamTextList)
         {
-            text.text = "No";
+            text.text = "  ";
         }
     }
 }

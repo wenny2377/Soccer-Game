@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Shoot",
+                    "name": "Kick",
                     "type": "Button",
                     "id": "511f726f-3cfd-495c-b292-7be81cc17636",
                     "expectedControlType": "Button",
@@ -246,7 +246,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shoot",
+                    "action": "Kick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

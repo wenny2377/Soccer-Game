@@ -5,14 +5,14 @@ using UnityEngine;
 public class PlayerVisual : MonoBehaviour {
 
 
-    [SerializeField] private MeshRenderer headMeshRenderer;
+    [SerializeField] private MeshRenderer bodyMeshRenderer;
     
 
     private Material material;
 
     private void Awake() {
-        material = new Material(headMeshRenderer.material);
-        headMeshRenderer.material = material;
+        material = new Material(bodyMeshRenderer.material);
+        bodyMeshRenderer.material = material;
         
     }
 

@@ -190,7 +190,7 @@ public class SoccerGameMultiplayer : NetworkBehaviour {
     [ServerRpc(RequireOwnership = false)]
     private void ChangePlayerColorServerRpc(int colorId, ServerRpcParams serverRpcParams = default) {
         if (!IsColorAvailable(colorId)) {
-            // Color not available
+           
             return;
         }
 

@@ -9,18 +9,18 @@ public class ScoreUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI blueTeamScoreText;
 
     private void Start() {
-        ShootManager.Instance.OnScoreUpdated += ShootManager_OnScoreUpdated;
+        KickManager.Instance.OnScoreUpdated += KickManager_OnScoreUpdated;
         UpdateScoreUI();
     }
 
-    private void ShootManager_OnScoreUpdated(object sender, EventArgs e) {
+    private void KickManager_OnScoreUpdated(object sender, EventArgs e) {
         UpdateScoreUI();
     }
 
     
     private void UpdateScoreUI() {
-       orangeTeamScoreText.text = ShootManager.Instance.GetOrangeTeamScore().ToString();
-       blueTeamScoreText.text = ShootManager.Instance.GetBlueTeamScore().ToString();
+       orangeTeamScoreText.text = KickManager.Instance.GetOrangeTeamScore().ToString();
+       blueTeamScoreText.text = KickManager.Instance.GetBlueTeamScore().ToString();
     }
 }
 
