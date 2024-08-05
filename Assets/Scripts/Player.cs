@@ -75,10 +75,7 @@ public class Player : NetworkBehaviour
     {
         if (!SoccerGameManager.Instance.IsGamePlaying()) return;
 
-        if (selectedObject != null && selectedObject.CompareTag("Soccerball"))
-        {
-            KickSoccerBall(selectedObject);
-        }
+        
     }
 
     private void Update()
@@ -114,10 +111,12 @@ public class Player : NetworkBehaviour
             {
                 GameObject Soccerball = raycastHit.transform.gameObject;
 
-                if (Soccerball != selectedObject)
-                {
+                
+                
+                    if (Soccerball != selectedObject)
+                    {
                     SetSelectedObject(Soccerball);
-                }
+                    }
             }
             else
             {
@@ -181,8 +180,5 @@ public class Player : NetworkBehaviour
         });
     }
 
-    private void KickSoccerBall(GameObject soccerBall)
-    {
-        return;
-    }
+ 
 }

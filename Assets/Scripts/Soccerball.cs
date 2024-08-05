@@ -4,7 +4,7 @@ using Unity.Netcode;
 public class SoccerBall : NetworkBehaviour
 {
     [SerializeField] private float maxSpeed = 10f;
-    
+
     private Rigidbody rb;
     private NetworkVariable<int> lastPlayerColorId = new NetworkVariable<int>(-1);
     private NetworkVariable<Vector3> networkedVelocity = new NetworkVariable<Vector3>();
@@ -16,21 +16,17 @@ public class SoccerBall : NetworkBehaviour
 
     private void Update()
     {
-       
         if (IsServer)
         {
-
             if (rb.velocity.magnitude > maxSpeed)
             {
                 rb.velocity = rb.velocity.normalized * maxSpeed;
             }
 
-            
             networkedVelocity.Value = rb.velocity;
         }
         else
         {
-           
             rb.velocity = networkedVelocity.Value;
         }
     }
@@ -40,26 +36,33 @@ public class SoccerBall : NetworkBehaviour
         if (IsServer)
         {
             rb.AddForce(direction * force, ForceMode.Impulse);
-            lastPlayerColorId.Value = playerColorId; // Update last player to touch the ball
+            lastPlayerColorId.Value = playerColorId;
+            Debug.Log($"Last Player Color ID: {lastPlayerColorId.Value}");
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!IsServer) return;
+        Debug.Log("OnTriggerEnter start ...");
+        PlayerData playerData = SoccerGameMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
+    
 
-        if (other.CompareTag("OrangeGate"))
+        if (other.CompareTag("orangeGate"))
         {
-            if (IsOrangeTeam(lastPlayerColorId.Value))
+            if (IsBlueTeam(playerData.colorId)) 
             {
-                KickManager.Instance.GoalScored(1);
+                Debug.Log("orangeGate...");
+                KickManager.Instance.GoalScored(other.transform, 0);
             }
         }
-        else if (other.CompareTag("BlueGate"))
+        else if (other.CompareTag("blueGate"))
         {
-            if (IsBlueTeam(lastPlayerColorId.Value))
+            if (IsOrangeTeam(playerData.colorId)) 
             {
-                KickManager.Instance.GoalScored(0);
+                Debug.Log("blueGate...");
+                Debug.Log("blueGate... Last Player Color ID:" + playerData.colorId);
+                KickManager.Instance.GoalScored(other.transform, 1); 
             }
         }
     }

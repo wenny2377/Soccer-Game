@@ -12,6 +12,8 @@ public class KickManager : NetworkBehaviour
     public event EventHandler OnPlayerJoined;
 
     [SerializeField] private Transform soccerBallPrefab;
+    [SerializeField] private Transform orangeGate;
+    [SerializeField] private Transform blueGate;
 
     private NetworkVariable<int> orangeTeamScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<int> blueTeamScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -48,17 +50,17 @@ public class KickManager : NetworkBehaviour
         return playerTeams.ContainsKey(clientId) ? playerTeams[clientId] : -1;
     }
 
-    public void GoalScored(int scoringTeamColorId)
+    public void GoalScored(Transform goalGate, int scoringTeamColorId)
     {
         if (IsServer)
         {
-            if (scoringTeamColorId == 1)
-            {
-                orangeTeamScore.Value++;
-            }
-            else if (scoringTeamColorId == 0)
+            if (goalGate == orangeGate && scoringTeamColorId == 0) 
             {
                 blueTeamScore.Value++;
+            }
+            else if (goalGate == blueGate && scoringTeamColorId == 1) 
+            {
+                orangeTeamScore.Value++;
             }
 
             OnGoalScored?.Invoke(this, EventArgs.Empty);

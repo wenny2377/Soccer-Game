@@ -40,6 +40,7 @@ public class SoccerGameMultiplayer : NetworkBehaviour {
 
         playerDataNetworkList = new NetworkList<PlayerData>();
         playerDataNetworkList.OnListChanged += PlayerDataNetworkList_OnListChanged;
+
     }
 
     private void Start() {
