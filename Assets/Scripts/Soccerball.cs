@@ -37,14 +37,13 @@ public class SoccerBall : NetworkBehaviour
         {
             rb.AddForce(direction * force, ForceMode.Impulse);
             lastPlayerColorId.Value = playerColorId;
-            Debug.Log($"Last Player Color ID: {lastPlayerColorId.Value}");
         }
     }
 
+   
     private void OnTriggerEnter(Collider other)
     {
         if (!IsServer) return;
-        Debug.Log("OnTriggerEnter start ...");
         PlayerData playerData = SoccerGameMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
     
 
@@ -52,7 +51,6 @@ public class SoccerBall : NetworkBehaviour
         {
             if (IsBlueTeam(playerData.colorId)) 
             {
-                Debug.Log("orangeGate...");
                 KickManager.Instance.GoalScored(other.transform, 0);
             }
         }
@@ -60,8 +58,6 @@ public class SoccerBall : NetworkBehaviour
         {
             if (IsOrangeTeam(playerData.colorId)) 
             {
-                Debug.Log("blueGate...");
-                Debug.Log("blueGate... Last Player Color ID:" + playerData.colorId);
                 KickManager.Instance.GoalScored(other.transform, 1); 
             }
         }

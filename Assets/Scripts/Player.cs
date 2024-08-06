@@ -35,9 +35,7 @@ public class Player : NetworkBehaviour
 
     private void Start()
     {
-        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
-        GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
-
+        
         PlayerData playerData = SoccerGameMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
         playerVisual.SetPlayerColor(SoccerGameMultiplayer.Instance.GetPlayerColor(playerData.colorId));
     }
@@ -61,24 +59,10 @@ public class Player : NetworkBehaviour
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
-        // Handle client disconnect if necessary
-    }
-
-    private void GameInput_OnInteractAlternateAction(object sender, EventArgs e)
-    {
-        if (!SoccerGameManager.Instance.IsGamePlaying()) return;
-
-        // Define alternate interaction here if needed
-    }
-
-    private void GameInput_OnInteractAction(object sender, EventArgs e)
-    {
-        if (!SoccerGameManager.Instance.IsGamePlaying()) return;
-
         
     }
 
-    private void Update()
+       private void Update()
     {
         if (!IsOwner)
         {
@@ -95,32 +79,29 @@ public class Player : NetworkBehaviour
     }
 
     private void HandleInteractions()
+{
+    Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
+    Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+
+    if (moveDir != Vector3.zero)
     {
-        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
-        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+        lastInteractDir = moveDir;
+    }
 
-        if (moveDir != Vector3.zero)
+    float interactDistance = 2f;
+    if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, stadiumLayerMask))
+    {
+        if (raycastHit.transform.gameObject.CompareTag("Soccerball"))
         {
-            lastInteractDir = moveDir;
-        }
-
-        float interactDistance = 2f;
-        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, stadiumLayerMask))
-        {
-            if (raycastHit.transform.gameObject.CompareTag("Soccerball"))
+            GameObject soccerBall = raycastHit.transform.gameObject;                  
+            SoccerBall soccerBallComponent = soccerBall.GetComponent<SoccerBall>();
+            if (soccerBallComponent != null)
             {
-                GameObject Soccerball = raycastHit.transform.gameObject;
-
+                Vector3 kickDirection = moveDir.normalized;
+                float kickForce = 10f; 
+                PlayerData playerData = SoccerGameMultiplayer.Instance.GetPlayerDataFromClientId(OwnerClientId);
+                soccerBallComponent.OnPlayerTouch(kickDirection, kickForce, playerData.colorId);
                 
-                
-                    if (Soccerball != selectedObject)
-                    {
-                    SetSelectedObject(Soccerball);
-                    }
-            }
-            else
-            {
-                SetSelectedObject(null);
             }
         }
         else
@@ -128,6 +109,12 @@ public class Player : NetworkBehaviour
             SetSelectedObject(null);
         }
     }
+    else
+    {
+        SetSelectedObject(null);
+    }
+}
+
 
     private void HandleMovement()
     {
